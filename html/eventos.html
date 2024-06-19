@@ -1,0 +1,37 @@
+<section class="conteiner-table center-conteiner">
+  <h2 class="subtitle-sections sc-conteiner-info">Eventos</h2>
+  <button id="btn-editar" class="btn-form">Editar</button>
+  <table>
+    <thead>
+    <tr>
+      <th>Nombre del Evento</th>
+      <th>Fecha</th>
+      <th>Lugar</th>
+      <th>Tematica Principal</th>
+      <th>Sitio web</th>
+      <th>Costo</th>
+      <th>Borrar</th>
+    </tr>
+    </thead>
+    <tbody id="tablaDinamica">
+    </tbody>
+  </table>
+  <form id="form-evento" class="center-conteiner">
+    <h3 class="subtitle-sections sc-conteiner-info">Agregar Evento</h3>
+    <label for="nombre">Nombre del Evento</label>
+    <input type="text" id="nombre" name="nombre" required>
+    <label for="fecha">Fecha</label>
+    <input type="date" id="fecha" name="fecha" required>
+    <label for="lugar">Lugar</label>
+    <input type="text" id="lugar" name="lugar" required>
+    <label for="tematica">Tematica Principal</label>
+    <input type="text" id="tematica" name="tematica" required>
+    <label for="link">Sitio web</label>
+    <input type="text" id="link" name="link" required>
+    <label for="costo">Costo</label>
+    <input type="number" id="costo" name="costo" required>
+    <br> <!-- Hay que buscar otra manera no es buena practica-->
+    <button type="submit" class="btn-form">Agregar</button>
+  </form>
+</section>
+<script src="js/tablaDinamica.js"></script>
