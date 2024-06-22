@@ -1,37 +1,73 @@
 <section class="conteiner-table center-conteiner">
   <h2 class="subtitle-sections sc-conteiner-info">Eventos</h2>
+  <div class="filters">
+    <input type="text" id="filtronombre" placeholder="Nombre del Evento">
+    <input type="date" id="filtrofecha" placeholder="Fecha">
+    <input type="text" id="filtrolugar" placeholder="Lugar">
+    <input type="text" id="filtrotematica" placeholder="Tematica Principal">
+    <input type="number" id="filtrocostomin" placeholder="Costo mayor a">
+    <input type="number" id="filtrocostomax" placeholder="Costo menor a">
+  </div>
   <table>
     <thead>
-    <tr>
-      <th>Nombre del Evento</th>
-      <th>Fecha</th>
-      <th>Lugar</th>
-      <th>Tematica Principal</th>
-      <th>Sitio web</th>
-      <th>Costo</th>
-      <th>Borrar</th>
-      <th>Editar</th>
-    </tr>
+      <tr>
+        <th>Nombre del Evento</th>
+        <th>Fecha</th>
+        <th>Lugar</th>
+        <th>Tematica Principal</th>
+        <th>Sitio web</th>
+        <th>Costo</th>
+        <th>Borrar</th>
+        <th>Editar</th>
+      </tr>
     </thead>
     <tbody id="tablaDinamica">
     </tbody>
   </table>
-  <form id="form-evento" class="center-conteiner">
-    <h3 class="subtitle-sections sc-conteiner-info">Agregar Evento</h3>
-    <label for="nombre">Nombre del Evento</label>
-    <input type="text" id="nombre" name="nombre" required>
-    <label for="fecha">Fecha</label>
-    <input type="date" id="fecha" name="fecha" required>
-    <label for="lugar">Lugar</label>
-    <input type="text" id="lugar" name="lugar" required>
-    <label for="tematica">Tematica Principal</label>
-    <input type="text" id="tematica" name="tematica" required>
-    <label for="link">Sitio web</label>
-    <input type="text" id="link" name="link" required>
-    <label for="costo">Costo</label>
-    <input type="number" id="costo" name="costo" required>
-    <br> <!-- Hay que buscar otra manera no es buena practica-->
-    <button type="submit" class="btn-form">Agregar</button>
-  </form>
+  <button id="anterior-pagina">Anterior</button>
+  <button id="siguiente-pagina">Siguiente</button>
 </section>
-<script src="js/tablaDinamica.js"></script>
+<section class="center-conteiner">
+  <h3 class="subtitle-sections sc-conteiner-info">Agregar Evento</h3>
+  <div class="evento">
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre del Evento</th>
+          <th>Fecha</th>
+          <th>Lugar</th>
+          <th>Tematica Principal</th>
+          <th>Sitio web</th>
+          <th>Costo</th>
+          <th>Borrar</th>
+        </tr>
+      </thead>
+      <tbody id="tablaAgregarEvento">
+      </tbody>
+    </table>
+    <button id="agregarEvento">Agregar evento</button>
+    <button id="cargarEventos">Cargar eventos</button>
+    <div id="contenedor-formulario-evento" class="hidden">
+      <div id="formularioEvento">
+        <h3 class="subtitle-sections sc-conteiner-info">Formulario</h3>
+        <form id="formulario">
+          <label for="nombreEvento">Nombre del Evento</label>
+          <input type="text" name="nombreEvento" placeholder="Nombre del Evento" required>
+          <label for="fechaEvento">Fecha</label>
+          <input type="date" name="fechaEvento" placeholder="Fecha" required>
+          <label for="lugarEvento">Lugar</label>
+          <input type="text" name="lugarEvento" placeholder="Lugar" required>
+          <label for="tematicaEvento">Tematica Principal</label>
+          <input type="text" name="tematicaEvento" placeholder="Tematica Principal" required>
+          <label for="sitioEvento">Sitio web</label>
+          <input type="text" name="sitioEvento" placeholder="Sitio web" required>
+          <label for="costoEvento">Costo</label>
+          <input type="number" name="costoEvento" placeholder="Costo" required>
+          <div>
+            <input type="submit" value="Guardar">
+          </div>
+        </form>
+        <button id="cancelarEvento">Cancelar</button>
+      </div>
+    </div>
+</section>

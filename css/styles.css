@@ -38,6 +38,11 @@ input[type="text"]{
     color: #66fcf1;
   }
 
+  #formularioEvento{
+    background-color: #1f2833;
+    border: 1px solid #45a29e;
+  }
+
   th {
     background-color: #45a29e;
   }
@@ -66,12 +71,8 @@ input[type="text"]{
   }
 
   #form-evento {
-    width: 30%;
-    margin: 10px;
     background-color: #1f2833;
     border: 1px solid #45a29e;
-    border-radius: 10px;
-    padding: 10px;
   }
 }
 
@@ -102,6 +103,11 @@ input[type="text"]{
     color: #356562;
   }
 
+  #formularioEvento{
+    background-color: #6fb3b8;
+    border: 1px solid #357a77;
+  }
+
   th {
     background-color: #45a29e;
   }
@@ -130,12 +136,8 @@ input[type="text"]{
   }
 
   #form-evento {
-    width: 30%;
-    margin: 10px;
     background-color: #c2edce;
     border: 1px solid #6fb3b8;
-    border-radius: 10px;
-    padding: 10px;
   }
 }
 
@@ -219,18 +221,6 @@ header h1 {
   width: 90%;
 }
 
-#elegir-lenguaje {
-  grid-area: elegir-lenguaje;
-}
-
-#clas-lenguajes {
-  grid-area: clas-lenguajes;
-}
-
-#lenguaje-de-prog {
-  grid-area: lenguaje-de-prog;
-}
-
 .subtitle-sections {
   text-align: center;
   font-size: 1.3rem;
@@ -267,6 +257,7 @@ ul li {
 /*Tabla*/
 
 table {
+  width: 80%;
   margin-top: 30px;
 }
 
@@ -281,6 +272,18 @@ td {
   padding-bottom: 20px;
 }
 
+.filters{
+  display: flex;
+  width: 65%;
+  justify-content: space-around;
+  align-items: center;
+  margin: 10px 0;
+}
+
+input[type="date" i] {
+  width: 100%;
+}
+
 /*Noticias*/
 
 .elemento-form {
@@ -288,6 +291,10 @@ td {
   justify-content: space-between;
   align-items: center;
   margin: 10px 0;
+}
+
+.elemento-form input{
+  width: 50%;
 }
 
 .conteiner-form {
@@ -344,6 +351,40 @@ td {
   justify-content: center;
 }
 
+
+/*Eventos*/
+.evento{
+  width: 80%;
+  border-radius: 10px;
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  text-decoration: none;
+}
+
+#formularioEvento{
+  width: 80%;
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  #formulario{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  input{
+    margin: 5px;
+    max-width: 90%;
+  }
+}
+
 /*Desktop*/
 
 @media only screen and (min-width: 768px) {
@@ -363,6 +404,11 @@ td {
 
   #elegir-lenguaje{
     width: 45%;
+  }
+
+  #formularioEvento{
+    width: 50%;
+    max-width: 500px;
   }
   
 
