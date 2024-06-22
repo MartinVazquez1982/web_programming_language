@@ -1,10 +1,33 @@
 "use strict"
 
-document.addEventListener('DOMContentLoaded', function(){
-  
-  const newsletter = document.getElementById('newsletter');
-  const imgCatpcha = document.getElementById('captcha-img');
+document.getElementById('newsletter').addEventListener('submit', function(event){
+  event.preventDefault();
   const ctnNForm = document.getElementById('ctn-form');
+
+  const newsletter = document.getElementById('newsletter');
+  const dataNewletter = new FormData(newsletter);
+  const catpcha = dataNewletter.get('captcha');
+  let alertCaptcha = document.getElementById('info-captcha');
+
+  // Revisa si el texto de aviso no fue creado
+  if (alertCaptcha === null){
+    alertCaptcha = document.createElement('p');
+    alertCaptcha.id = 'info-captcha';
+    ctnNForm.appendChild(alertCaptcha);
+  }
+
+  const imgCatpcha = document.getElementById('captcha-img');
+  const numeroCaptcha = imgCatpcha.src.split('/').pop().split('.')[0];
+  if (catpcha !== resultCaptcha(parseInt(numeroCaptcha))){
+    alertCaptcha.innerHTML = 'Captcha incorrecto. Intente nuevamente.';
+  } else {
+    alertCaptcha.innerHTML = 'Gracias por suscribirte a nuestro newsletter.';
+    newsletter.reset();
+  }
+  selectCaptcha();
+});
+
+function resultCaptcha(num) {
   const captchasSoluciones = [
     "nvhoxdm",
     "phxxjdrk",
@@ -18,38 +41,16 @@ document.addEventListener('DOMContentLoaded', function(){
     "czchjiav",
     "wvvjcfua"
   ];
-  let solucionCatpcha;
-  selectCaptcha();
+  if (num >= 0 && num < captchasSoluciones.length) {
+    return captchasSoluciones[num]
+  }
+}
 
-  newsletter.addEventListener('submit', function(event){
-    event.preventDefault();
+// Calcula el captcha a mostrar
+function selectCaptcha(){
+  const imgCatpcha = document.getElementById('captcha-img');
+  const catpchaSelected = Math.floor(Math.random() * 11);
+  imgCatpcha.src = `images/captcha/${catpchaSelected}.png`;
+};
 
-    const dataNewletter = new FormData(newsletter);
-    const catpcha = dataNewletter.get('captcha');
-    let alertCaptcha = document.getElementById('info-captcha');
-
-    // Revisa si el texto de aviso no fue creado
-    if (alertCaptcha === null){
-      alertCaptcha = document.createElement('p');
-      alertCaptcha.id = 'info-captcha';
-      ctnNForm.appendChild(alertCaptcha);
-    }
-    
-    if (catpcha != solucionCatpcha){
-      alertCaptcha.innerHTML = 'Captcha incorrecto. Intente nuevamente.';
-    } else {
-      alertCaptcha.innerHTML = 'Gracias por suscribirte a nuestro newsletter.';
-      newsletter.reset();
-    }
-    selectCaptcha();
-  });
-
-  // Calcula el captcha a mostrar
-  function selectCaptcha(){
-    const catpchaSelected = Math.floor(Math.random() * 11);
-    solucionCatpcha = captchasSoluciones[catpchaSelected];
-    imgCatpcha.src = `images/captcha/${catpchaSelected}.png`;
-  };
-
-
-})
+selectCaptcha();
