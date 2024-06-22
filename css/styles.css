@@ -290,6 +290,10 @@ td {
   margin: 10px 0;
 }
 
+.elemento-form input{
+  width: 50%;
+}
+
 .conteiner-form {
   display: flex;
   flex-direction: column;

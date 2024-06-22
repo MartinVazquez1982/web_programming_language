@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // Carga la nueva pagina
   async function cargarPagina(pagina) {
     try {
-      const response = await fetch(`/web_programming_lenguage/html/${pagina}.html`)
+      const response = await fetch(`html/${pagina}.html`)
       if (response.ok) {
         const contenido = await response.text()
         const scriptBorrar = document.querySelector('#script-funcionalidad')
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function actualizarRuta(ruta){
     document.title = titles[ruta]
-    window.history.pushState({ pagina: ruta }, `${ruta}`, `/web_programming_lenguage/html:poop:/${ruta}`)
+    window.history.pushState({ pagina: ruta }, `${ruta}`, `/${ruta}`)
   }
 
   // Revisa cual es la proxima pagina a carga
