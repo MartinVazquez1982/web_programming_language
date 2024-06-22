@@ -2,10 +2,11 @@
 // https://6670b38d0900b5f8724b63bf.mockapi.io/api/v1/eventos
 
 
-async function cargar(){
-  
-  let tabla = document.getElementById("tablaDinamica");
+
+async function cargar() {
   let ids = []
+  let tabla = document.getElementById("tablaDinamica");
+
   const api_url = "https://6670b38d0900b5f8724b63bf.mockapi.io/api/v1/eventos";
 
   const response = await (await fetch(api_url)).json();
@@ -19,6 +20,7 @@ async function cargar(){
     let celdalink = fila.insertCell(4);
     let celdaCosto = fila.insertCell(5);
     let celdaBorrar = fila.insertCell(6);
+    let celdaEditar = fila.insertCell(7);
 
     celdanombre.textContent = response[i].nombre;
     const date = new Date(response[i].fecha * 1000);
@@ -26,31 +28,17 @@ async function cargar(){
     celdaFecha.textContent = localDate;
     celdaLugar.textContent = response[i].lugar;
     celdatematica.textContent = response[i].tematica;
-    celdalink.innerHTML = `<a href="${response[i].link}" target="_blank">Sitio Web del Evento</a>`;
+    celdalink.innerHTML = `<a href="${response[i].link}" target="_blank">${response[i].link}</a>`;
     celdaCosto.textContent = response[i].costo;
     ids.push(response[i].id);
     celdaBorrar.innerHTML = `<button>Borrar</button>`;
-    celdaBorrar.addEventListener("click", function () {
-      fetch(
-        `https://6670b38d0900b5f8724b63bf.mockapi.io/api/v1/eventos/${response[i].id}`,
-        {
-          method: "DELETE",
-        }
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Borrado:", data);
-          fila.parentNode.removeChild(fila);
-          ids.splice(ids.indexOf(response[i].id), 1);
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
-    });
+    celdaBorrar.addEventListener("click", () => { borrarFila(fila, response[i].id, ids); });
+    celdaEditar.innerHTML = `<button>Editar</button>`;
+    celdaEditar.addEventListener("click", () => { editar(fila, i, ids, celdaEditar, tabla); });
   }
 
   let form_evento = document.getElementById("form-evento");
-  form_evento.addEventListener("submit", function (event) {
+  form_evento.addEventListener("submit", async function (event) {
     event.preventDefault();
     let nombre = document.getElementById("nombre").value;
     let fecha = Math.floor(
@@ -69,8 +57,74 @@ async function cargar(){
       costo: costo,
     };
 
-    fetch("https://6670b38d0900b5f8724b63bf.mockapi.io/api/v1/eventos", {
-      method: "POST",
+    try {
+      const response = await fetch("https://6670b38d0900b5f8724b63bf.mockapi.io/api/v1/eventos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+      
+      if (response.ok) {
+        tabla.innerHTML = "";
+        cargar();
+        form_evento.reset();
+      } else {
+        throw new Error("Error: " + response.status);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  });
+}
+
+cargar()
+
+function borrarFila(fila, id, ids) {
+  fetch(
+    `https://6670b38d0900b5f8724b63bf.mockapi.io/api/v1/eventos/${id}`,
+    {
+      method: "DELETE",
+    }
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      fila.parentNode.removeChild(fila);
+      ids.splice(ids.indexOf(id), 1);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}
+
+function editar(fila, i, ids, celdaEditar, tabla) {
+  let cells = fila.getElementsByTagName("td");
+  let eventId = ids[i];
+  if (celdaEditar.innerHTML === "<button>Editar</button>") { //editar
+    let tableRows = tabla.getElementsByTagName("tr");
+    let cells = tableRows[i].getElementsByTagName("td");
+    for (let j = 0; j < cells.length - 2; j++) {
+      let input = document.createElement("input");
+      input.type = "text";
+      input.value = cells[j].textContent;
+      cells[j].textContent = "";
+      cells[j].appendChild(input);
+    }
+    celdaEditar.innerHTML = '<button>Guardar</button>';
+  } else {
+    console.log("guardar");
+    console.log(cells[0].getElementsByTagName("input")[0]);
+    let body = {
+      nombre: cells[0].getElementsByTagName("input")[0].value,
+      fecha: Math.floor(new Date(cells[1].getElementsByTagName("input")[0].value).getTime() / 1000),
+      lugar: cells[2].getElementsByTagName("input")[0].value,
+      tematica: cells[3].getElementsByTagName("input")[0].value,
+      link: cells[4].getElementsByTagName("input")[0].value,
+      costo: cells[5].getElementsByTagName("input")[0].value
+    };
+    fetch(`https://6670b38d0900b5f8724b63bf.mockapi.io/api/v1/eventos/${eventId}`, {
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
@@ -78,85 +132,18 @@ async function cargar(){
     })
       .then((response) => response.json())
       .then((data) => {
-        let fila = tabla.insertRow(-1);
-        let celdanombre = fila.insertCell(0);
-        let celdaFecha = fila.insertCell(1);
-        let celdaLugar = fila.insertCell(2);
-        let celdatematica = fila.insertCell(3);
-        let celdalink = fila.insertCell(4);
-        let celdaCosto = fila.insertCell(5);
-        let celdaBorrar = fila.insertCell(6);
-
-        celdanombre.textContent = data.nombre;
+        cells[0].textContent = data.nombre;
         const date = new Date(data.fecha * 1000);
         const localDate = date.toLocaleDateString();
-        celdaFecha.textContent = localDate;
-        celdaLugar.textContent = data.lugar;
-        celdatematica.textContent = data.tematica;
-        celdalink.innerHTML = `<a href="${data.link}" target="_blank">Sitio Web del Evento</a>`;
-        celdaCosto.textContent = data.costo;
-        celdaBorrar.innerHTML = `<button onclick="borrarFila(this)">Borrar</button>`;
+        cells[1].textContent = localDate;
+        cells[2].textContent = data.lugar;
+        cells[3].textContent = data.tematica;
+        cells[4].innerHTML = `<a href="${data.link}" target="_blank">${data.link}</a>`;
+        cells[5].textContent = data.costo;
+        celdaEditar.innerHTML = '<button>Editar</button>';
       })
       .catch((error) => {
         console.error("Error:", error);
       });
-    form_evento.reset();
-  });
-
-  let btn_editar = document.getElementById("btn-editar");
-  btn_editar.addEventListener("click", function () {
-    if (btn_editar.innerHTML === "Editar") { //editar
-        let tableRows = tabla.getElementsByTagName("tr");
-        for (let i = 0; i < tableRows.length; i++) {
-            let cells = tableRows[i].getElementsByTagName("td");
-            for (let j = 0; j < cells.length; j++) {
-                let input = document.createElement("input");
-                input.type = "text";
-                input.value = cells[j].textContent;
-                cells[j].textContent = "";
-                cells[j].appendChild(input);
-            }
-        }
-        btn_editar.innerHTML = "Guardar";
-    } else { //guardar
-        let tableRows = tabla.getElementsByTagName("tr");
-        for (let i = 0; i < tableRows.length; i++) {
-            let cells = tableRows[i].getElementsByTagName("td");
-            let eventId = ids[i];
-            let body = {
-                nombre: cells[0].getElementsByTagName("input")[0].value,
-                fecha: Math.floor(new Date(cells[1].getElementsByTagName("input")[0].value).getTime() / 1000),
-                lugar: cells[2].getElementsByTagName("input")[0].value,
-                tematica: cells[3].getElementsByTagName("input")[0].value,
-                link: cells[4].getElementsByTagName("input")[0].value,
-                costo: cells[5].getElementsByTagName("input")[0].value
-            };
-            console.log("" + eventId);
-            fetch(`https://6670b38d0900b5f8724b63bf.mockapi.io/api/v1/eventos/${eventId}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(body),
-            })
-                .then((response) => response.json())
-                .then((data) => {
-                    cells[0].textContent = data.nombre;
-                    const date = new Date(data.fecha * 1000);
-                    const localDate = date.toLocaleDateString();
-                    cells[1].textContent = localDate;
-                    cells[2].textContent = data.lugar;
-                    cells[3].textContent = data.tematica;
-                    cells[4].innerHTML = `<a href="${data.link}" target="_blank">Sitio Web del Evento</a>`;
-                    cells[5].textContent = data.costo;
-                })
-                .catch((error) => {
-                    console.error("Error:", error);
-                });
-        }
-        btn_editar.innerHTML = "Editar";
-    }
-  });
+  }
 }
-
-cargar()

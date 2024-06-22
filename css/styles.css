@@ -202,11 +202,21 @@ header h1 {
 /*Home*/
 
 .container-info-principal {
-  display: grid;
-  grid-template-areas:
-    "lenguaje-de-prog"
-    "clas-lenguajes"
-    "elegir-lenguaje";
+  display: flex;
+  flex-direction: column;
+}
+
+.container-wrap{
+  display: flex;
+  flex-direction: column;
+}
+
+#clas-lenguajes {
+  width: 90%;
+}
+
+#elegir-lenguaje{
+  width: 90%;
 }
 
 #elegir-lenguaje {
@@ -342,6 +352,19 @@ td {
       "lenguaje-de-prog lenguaje-de-prog"
       "clas-lenguajes elegir-lenguaje";
   }
+
+  .container-wrap{
+    flex-direction: row;
+  }
+
+  #clas-lenguajes {
+    width: 45%;
+  }
+
+  #elegir-lenguaje{
+    width: 45%;
+  }
+  
 
   #btn-modo-color img {
     width: 30%;
