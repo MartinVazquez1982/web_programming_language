@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function actualizarRuta(ruta){
     document.title = titles[ruta]
-    window.history.pushState({ pagina: ruta }, `${ruta}`, `/${ruta}`)
+    window.history.pushState({ pagina: ruta }, `${ruta}`, `/web_programming_lenguage/html:poop:/${ruta}`)
   }
 
   // Revisa cual es la proxima pagina a carga
