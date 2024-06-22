@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
   async function cargarPagina(pagina) {
     try {
       console.log(window.location.origin)
-      const response = await fetch(`${window.location.origin}/html/${pagina}.html`)
+      const response = await fetch(`${window.location.origin}/web_programming_lenguage/html/${pagina}.html`)
       if (response.ok) {
         const contenido = await response.text()
         const scriptBorrar = document.querySelector('#script-funcionalidad')
