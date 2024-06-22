@@ -1,6 +1,6 @@
 "use strict";
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener('DOMContentLoaded', function () {
   // Funcionalidad de la barra de navegación
   const btn_nav = document.querySelector("#btn-nav");
   const nav = document.querySelector("#nav");
@@ -85,14 +85,15 @@ document.addEventListener("DOMContentLoaded", function () {
     if (pagina){
       document.title = titles[pagina]
       cargarPagina(pagina) 
+    } else {
+      actualizarRuta('inicio')
+      cargarPagina('inicio') 
     }
   })
 
   // Carga el inicio
   actualizarRuta('inicio')
   cargarPagina('inicio') 
-
-  
 
   // Funcionalidad del tema de la pagina (Modo oscuro y modo claro)
 
@@ -119,4 +120,4 @@ document.addEventListener("DOMContentLoaded", function () {
     imgTema.alt = alt;
     temaOscuro = !temaOscuro;
   });
-});
+})
