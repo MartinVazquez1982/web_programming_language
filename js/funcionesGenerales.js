@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // Carga la nueva pagina
   async function cargarPagina(pagina) {
     try {
-      const response = await fetch(`${window.location.origin}/web_programming_lenguage/html/${pagina}.html`)
+      const response = await fetch(`/web_programming_lenguage/html/${pagina}.html`)
       if (response.ok) {
         const contenido = await response.text()
         const scriptBorrar = document.querySelector('#script-funcionalidad')
