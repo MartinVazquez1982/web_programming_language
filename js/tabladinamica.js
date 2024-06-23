@@ -78,7 +78,7 @@ async function iniciarPagina() {
     )
   }
 
-  // 
+  // Revisa que sea hasta una fecha determinada
   function compararfechas(fecha, filtroFecha) {
     if (filtroFecha === "") {
       return true;
