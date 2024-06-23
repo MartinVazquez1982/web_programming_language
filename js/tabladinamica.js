@@ -1,76 +1,84 @@
-"use strict";
+"use strict"
 
-async function load_pagina() {
-  let current_page = 1;
-  let ids = []
-  let tabla = document.getElementById("tablaDinamica");
+// Inicia las funcionalidad de la pagina de eventos
+async function iniciarPagina() {
+  let paginaActual = 1;
+  let idsEventos = []
+  const tablaDinamica = document.getElementById("tabla-dinamica");
 
-  cargar_tabla(current_page, tabla, ids);
+  cargarTablaDinamica(paginaActual, tablaDinamica, idsEventos);
 
-  //boton pagina anterior
+  // Boton pagina anterior
   document.getElementById("anterior-pagina").addEventListener("click", () => {
-    if (current_page > 1) {
-      current_page--;
-      cargar_tabla(current_page, tabla, ids);
+    if (paginaActual > 1) {
+      paginaActual--;
+      cargarTablaDinamica(paginaActual, tablaDinamica, idsEventos);
     }
   });
 
-  //boton pagina siguiente
+  // Boton pagina siguiente
   document.getElementById("siguiente-pagina").addEventListener("click", () => {
-    current_page++;
-    cargar_tabla(current_page, tabla, ids);
+    paginaActual++;
+    cargarTablaDinamica(paginaActual, tablaDinamica, idsEventos);
   });
 
-  let tablaAgregar = document.getElementById("tablaAgregarEvento");
+  const tablaAgregarEvento = document.getElementById("tabla-agregar-evento");
   
-  document.getElementById("agregarEvento").addEventListener("click", () => {
-    AgregarCamposEventos(tablaAgregar);
+  // Muestra el formulario para cargar un nuevo evento
+  document.getElementById("agregar-evento").addEventListener("click", () => {
+    AgregarCamposEventos(tablaAgregarEvento);
   });
 
-  document.getElementById("cargarEventos").addEventListener("click", () => {
-    AgregarEventos(tablaAgregar,tabla,ids,current_page);
+  // Envia eventos a la mockapi y los agrega a la tabla dinamica
+  document.getElementById("cargar-eventos").addEventListener("click", () => {
+    agregarEventos(tablaAgregarEvento,tablaDinamica,idsEventos,paginaActual);
   });
 
-  document.getElementById("cancelarEvento").addEventListener("click", () => {
-    document.getElementById("contenedor-formulario-evento").style.display = "none";
+  // Oculta el formulario para un nuevo evento
+  document.getElementById("cancelar-evento").addEventListener("click", () => {
+    document.getElementById("contenedor-formulario-evento").classList.add('hidden');
   });
 
+  // Filtros
+  document.querySelectorAll('.filters input').forEach( filter => { filter.addEventListener('input', realizarFiltrado) })
+  const filtroNombre = document.getElementById("filtro-nombre");
+  const filtroFecha = document.getElementById("filtro-fecha");
+  const filtroLugar = document.getElementById("filtro-lugar");
+  const filtroTematica = document.getElementById("filtro-tematica");
+  const filtroCostoMenor = document.getElementById("filtro-costo-min");
+  const filtroCostoMayor = document.getElementById("filtro-costo-max");
 
-  //filtros
-  let filtroNombre = document.getElementById("filtronombre");
-  let filtroFecha = document.getElementById("filtrofecha");
-  let filtroLugar = document.getElementById("filtrolugar");
-  let filtroTematica = document.getElementById("filtrotematica");
-  let filtroCostoMenor = document.getElementById("filtrocostomin");
-  let filtroCostoMayor = document.getElementById("filtrocostomax");
-
-  filtroNombre.addEventListener("input", filtros);
-  filtroFecha.addEventListener("input", filtros);
-  filtroLugar.addEventListener("input", filtros);
-  filtroTematica.addEventListener("input", filtros);
-  filtroCostoMenor.addEventListener("input", filtros);
-  filtroCostoMayor.addEventListener("input", filtros);
-
-  function filtros() {
-    let tabla = document.getElementById("tablaDinamica");
-    let tr = tabla.getElementsByTagName("tr");
-    for (let i = 0; i < tr.length; i++) {
-      let td = tr[i].getElementsByTagName("td");
-      let nombre = td[0].textContent;
-      let fecha = td[1].textContent;
-      let lugar = td[2].textContent;
-      let tematica = td[3].textContent;
-      let costo = td[5].textContent;
-      if (nombre.toLowerCase().includes(filtroNombre.value.toLowerCase()) && compararfechas(fecha, filtroFecha.value) &&
-        lugar.toLowerCase().includes(filtroLugar.value.toLowerCase()) && tematica.toLowerCase().includes(filtroTematica.value.toLowerCase()) &&
-        (filtroCostoMenor.value === "" || parseFloat(costo) >= parseFloat(filtroCostoMenor.value)) && (filtroCostoMayor.value === "" || parseFloat(costo) <= parseFloat(filtroCostoMayor.value))) {
-        tr[i].style.display = "";
+  // Realiza el filtrado de los eventos, los que no cumplen los ocultan
+  function realizarFiltrado() {
+    const eventos = tablaDinamica.getElementsByTagName("tr");
+    for (let i = 0; i < eventos.length; i++) {
+      let evento = eventos[i].getElementsByTagName("td");
+      let nombre = evento[0].textContent;
+      let fecha = evento[1].textContent;
+      let lugar = evento[2].textContent;
+      let tematica = evento[3].textContent;
+      let costo = evento[5].textContent;
+      if (mostrarFila(nombre, fecha, lugar, tematica, costo)) {
+        evento[i].classList.remove('hidden')
       } else {
-        tr[i].style.display = "none";
+        evento[i].classList.add('hidden')
       }
     }
   }
 
+  // Verifica si el evento cumple el filtrado
+  function mostrarFila(nombre, fecha, lugar, tematica, costo) {
+    return (
+      nombre.toLowerCase().includes(filtroNombre.value.toLowerCase()) && 
+      compararfechas(fecha, filtroFecha.value) &&
+      lugar.toLowerCase().includes(filtroLugar.value.toLowerCase()) && 
+      tematica.toLowerCase().includes(filtroTematica.value.toLowerCase()) &&
+      (filtroCostoMenor.value === "" || parseFloat(costo) >= parseFloat(filtroCostoMenor.value)) && 
+      (filtroCostoMayor.value === "" || parseFloat(costo) <= parseFloat(filtroCostoMayor.value))
+    )
+  }
+
+  // 
   function compararfechas(fecha, filtroFecha) {
     if (filtroFecha === "") {
       return true;
@@ -82,16 +90,14 @@ async function load_pagina() {
   }
 }
 
-load_pagina();
-
-
-async function cargar_tabla(pagina, tabla, ids) {
+// Realiza la carga de la tabla dinamica
+async function cargarTablaDinamica(pagina, tabla, idsEventos) {
   tabla.innerHTML = "";
   const api_url = `https://6670b38d0900b5f8724b63bf.mockapi.io/api/v1/eventos?page=${pagina}&limit=5`;
 
   const response = await (await fetch(api_url)).json();
 
-  //cargar tabla
+  //Carga la tabla dinamica
   for (let i = 0; i < response.length; i++) {
     let fila = tabla.insertRow(-1);
     let celdanombre = fila.insertCell(0);
@@ -111,15 +117,16 @@ async function cargar_tabla(pagina, tabla, ids) {
     celdatematica.textContent = response[i].tematica;
     celdalink.innerHTML = `<a href="${response[i].link}" target="_blank">${response[i].link}</a>`;
     celdaCosto.textContent = response[i].costo;
-    ids.push(response[i].id);
+    idsEventos.push(response[i].id);
     celdaBorrar.innerHTML = `<button>Borrar</button>`;
-    celdaBorrar.addEventListener("click", () => { borrarFila(fila, response[i].id, ids); });
+    celdaBorrar.addEventListener("click", () => { borrarEvento(fila, response[i].id, idsEventos); });
     celdaEditar.innerHTML = `<button>Editar</button>`;
-    celdaEditar.addEventListener("click", () => { editar(fila, i, ids, celdaEditar, tabla); });
+    celdaEditar.addEventListener("click", () => { editarEvento(fila, i, idsEventos, celdaEditar, tabla); });
   }
 }
 
-function borrarFila(fila, id, ids) {
+// Borra un evento
+function borrarEvento(fila, id, idsEventos) {
   fetch(
     `https://6670b38d0900b5f8724b63bf.mockapi.io/api/v1/eventos/${id}`,
     {
@@ -127,19 +134,20 @@ function borrarFila(fila, id, ids) {
     }
   )
     .then((response) => response.json())
-    .then((data) => {
+    .then(() => {
       fila.parentNode.removeChild(fila);
-      ids.splice(ids.indexOf(id), 1);
+      idsEventos.splice(idsEventos.indexOf(id), 1);
     })
     .catch((error) => {
       console.error("Error:", error);
     });
 }
 
-function editar(fila, i, ids, celdaEditar, tabla) {
+// Editar un evento
+function editarEvento(fila, i, idsEventos, celdaEditar, tabla) {
   let cells = fila.getElementsByTagName("td");
-  let eventId = ids[i];
-  if (celdaEditar.innerHTML === "<button>Editar</button>") { //editar
+  let eventId = idsEventos[i];
+  if (celdaEditar.innerHTML === "<button>Editar</button>") {
     let tableRows = tabla.getElementsByTagName("tr");
     let cells = tableRows[i].getElementsByTagName("td");
     for (let j = 0; j < cells.length - 2; j++) {
@@ -151,8 +159,6 @@ function editar(fila, i, ids, celdaEditar, tabla) {
     }
     celdaEditar.innerHTML = '<button>Guardar</button>';
   } else {
-    console.log("guardar");
-    console.log(cells[0].getElementsByTagName("input")[0]);
     let body = {
       nombre: cells[0].getElementsByTagName("input")[0].value,
       fecha: Math.floor(new Date(cells[1].getElementsByTagName("input")[0].value).getTime() / 1000),
@@ -188,77 +194,78 @@ function editar(fila, i, ids, celdaEditar, tabla) {
 
 function AgregarCamposEventos(tabla) {
   let contenedor = document.getElementById("contenedor-formulario-evento");
-  contenedor.style.display = "block";
+  contenedor.classList.remove("hidden");
 
-  let form = document.getElementById("formulario");
-  form.addEventListener("submit", (event) => {
+  let formNuevoEvento = document.getElementById("form-nuevo-evento");
+
+  // Evento al enviar el formulario de nuevo evento
+  formNuevoEvento.addEventListener("submit", (event) => {
     event.preventDefault();
-    let formulario = new FormData(form);
-    let nombre = formulario.get("nombreEvento");
-    let fecha = formulario.get("fechaEvento");
-    let lugar = formulario.get("lugarEvento");
-    let tematica = formulario.get("tematicaEvento");
-    let link = formulario.get("sitioEvento");
-    let costo = formulario.get("costoEvento");
-    console.log(nombre, fecha, lugar, tematica, link, costo);
-    // Submit the form
+    const formulario = new FormData(formNuevoEvento);
+    const nombre = formulario.get("nombre-evento");
+    const fecha = formulario.get("fecha-evento");
+    const lugar = formulario.get("lugar-evento");
+    const tematica = formulario.get("tematica-evento");
+    const link = formulario.get("sitio-evento");
+    const costo = formulario.get("costo-evento");
     submitForm(nombre, fecha, lugar, tematica, link, costo);
-    form.reset();
+    formNuevoEvento.reset();
   });
 
+  // Carga el nuevo evento en la tabla de nuevos eventos, para que luego se cargue en la mockapi
   function submitForm(nombre, fecha, lugar, tematica, link, costo) {
-    let tr = document.createElement("tr");
-    let td1 = document.createElement("td");
-    td1.textContent = nombre;
-    tr.appendChild(td1);
+    const nuevoEvento = document.createElement("tr");
+    const nombreNuevoEvent = document.createElement("td");
+    nombreNuevoEvent.innerHTML = nombre;
+    nuevoEvento.appendChild(nombreNuevoEvent);
 
-    let td2 = document.createElement("td");
-    td2.textContent = fecha;
-    tr.appendChild(td2);
+    const fechaNuevoEvento = document.createElement("td");
+    fechaNuevoEvento.innerHTML = fecha;
+    nuevoEvento.appendChild(fechaNuevoEvento);
 
-    let td3 = document.createElement("td");
-    td3.textContent = lugar;
-    tr.appendChild(td3);
+    const lugarNuevoEvento = document.createElement("td");
+    lugarNuevoEvento.innerHTML = lugar;
+    nuevoEvento.appendChild(lugarNuevoEvento);
 
-    let td4 = document.createElement("td");
-    td4.textContent = tematica;
-    tr.appendChild(td4);
+    const tematicaNuevoEvento = document.createElement("td");
+    tematicaNuevoEvento.innerHTML = tematica;
+    nuevoEvento.appendChild(tematicaNuevoEvento);
 
-    let td5 = document.createElement("td");
-    td5.innerHTML = `<a href="${link}" target="_blank">${link}</a>`;
-    tr.appendChild(td5);
+    const paginaNuevoEvento = document.createElement("td");
+    paginaNuevoEvento.innerHTML = `<a href="${link}" target="_blank">${link}</a>`;
+    nuevoEvento.appendChild(paginaNuevoEvento);
 
-    let td6 = document.createElement("td");
-    td6.textContent = costo;
-    tr.appendChild(td6);
+    const costoNuevoEvento = document.createElement("td");
+    costoNuevoEvento.innerHTML = costo;
+    nuevoEvento.appendChild(costoNuevoEvento);
 
-    let td7 = document.createElement("td");
-    let button = document.createElement("button");
-    button.textContent = "Borrar";
-    button.addEventListener("click", () => {
-      tr.parentNode.removeChild(tr);
+    const borrarNuevoEvento = document.createElement("td");
+    const btnBorrar = document.createElement("button");
+    btnBorrar.innerHTML = "Borrar";
+    btnBorrar.addEventListener("click", () => {
+      nuevoEvento.parentNode.removeChild(tr);
     });
-    td7.appendChild(button);
-    tr.appendChild(td7);
+    borrarNuevoEvento.appendChild(btnBorrar);
+    nuevoEvento.appendChild(borrarNuevoEvento);
 
-    tabla.appendChild(tr);
+    tabla.appendChild(nuevoEvento);
 
-    document.getElementById("contenedor-formulario-evento").style.display = "none";
+    document.getElementById("contenedor-formulario-evento").classList.add('hidden');
   }
 }
 
-async function AgregarEventos(tablaAgregar, tabla,ids,current_page) {
-  let trs = tablaAgregar.getElementsByTagName("tr");
+// Realiza la carga de los nuevos eventos en la tabla dinamica y en la mockapi
+async function agregarEventos(tablaAgregarEvento, tabla, idsEventos, paginaActual) {
+  let eventosNuevos = tablaAgregarEvento.getElementsByTagName("tr");
   
-  for(let i=0; i< trs.length; i++){
-    let tds = trs[i].getElementsByTagName("td");
-    console.log(tds);
-    let nombre = tds[0].textContent;
-    let fecha = Math.floor(new Date(tds[1].textContent).getTime() / 1000);
-    let lugar = tds[2].textContent;
-    let tematica = tds[3].textContent;
-    let link = tds[4].getElementsByTagName("a")[0].textContent;
-    let costo = parseInt(tds[5].textContent);
+  for(let i=0; i< eventosNuevos.length; i++){
+    let eventoNuevo = eventosNuevos[i].getElementsByTagName("td");
+    let nombre = eventoNuevo[0].textContent;
+    let fecha = Math.floor(new Date(eventoNuevo[1].textContent).getTime() / 1000);
+    let lugar = eventoNuevo[2].textContent;
+    let tematica = eventoNuevo[3].textContent;
+    let link = eventoNuevo[4].getElementsByTagName("a")[0].textContent;
+    let costo = parseInt(eventoNuevo[5].textContent);
     let body = {
       nombre: nombre,
       fecha: fecha,
@@ -284,7 +291,9 @@ async function AgregarEventos(tablaAgregar, tabla,ids,current_page) {
       console.error(error);
     }
   }
-  tablaAgregar.innerHTML = "";
-  cargar_tabla(current_page, tabla, ids);
+  tablaAgregarEvento.innerHTML = "";
+  cargarTablaDinamica(paginaActual, tabla, idsEventos);
 
 }
+
+iniciarPagina();

@@ -1,12 +1,12 @@
 <section class="conteiner-table center-conteiner">
   <h2 class="subtitle-sections sc-conteiner-info">Eventos</h2>
-  <div class="filters">
-    <input type="text" id="filtronombre" placeholder="Nombre del Evento">
-    <input type="date" id="filtrofecha" placeholder="Fecha">
-    <input type="text" id="filtrolugar" placeholder="Lugar">
-    <input type="text" id="filtrotematica" placeholder="Tematica Principal">
-    <input type="number" id="filtrocostomin" placeholder="Costo mayor a">
-    <input type="number" id="filtrocostomax" placeholder="Costo menor a">
+  <div class="container-manipulacion-tabla">
+    <input type="text" id="filtro-nombre" placeholder="Nombre del Evento">
+    <input type="date" id="filtro-fecha" placeholder="Fecha">
+    <input type="text" id="filtro-lugar" placeholder="Lugar">
+    <input type="text" id="filtro-tematica" placeholder="Tematica Principal">
+    <input type="number" id="filtro-costo-min" placeholder="Costo mayor a">
+    <input type="number" id="filtro-costo-max" placeholder="Costo menor a">
   </div>
   <table>
     <thead>
@@ -21,11 +21,13 @@
         <th>Editar</th>
       </tr>
     </thead>
-    <tbody id="tablaDinamica">
+    <tbody id="tabla-dinamica">
     </tbody>
   </table>
-  <button id="anterior-pagina">Anterior</button>
-  <button id="siguiente-pagina">Siguiente</button>
+  <div class="container-manipulacion-tabla">
+    <button id="anterior-pagina">Anterior</button>
+    <button id="siguiente-pagina">Siguiente</button>
+  </div>
 </section>
 <section class="center-conteiner">
   <h3 class="subtitle-sections sc-conteiner-info">Agregar Evento</h3>
@@ -42,32 +44,34 @@
           <th>Borrar</th>
         </tr>
       </thead>
-      <tbody id="tablaAgregarEvento">
+      <tbody id="tabla-agregar-evento">
       </tbody>
     </table>
-    <button id="agregarEvento">Agregar evento</button>
-    <button id="cargarEventos">Cargar eventos</button>
+    <div class="container-manipulacion-tabla">
+      <button id="agregar-evento">Agregar evento</button>
+      <button id="cargar-eventos">Cargar eventos</button>
+    </div>
     <div id="contenedor-formulario-evento" class="hidden">
       <div id="formularioEvento">
         <h3 class="subtitle-sections sc-conteiner-info">Formulario</h3>
-        <form id="formulario">
-          <label for="nombreEvento">Nombre del Evento</label>
-          <input type="text" name="nombreEvento" placeholder="Nombre del Evento" required>
-          <label for="fechaEvento">Fecha</label>
-          <input type="date" name="fechaEvento" placeholder="Fecha" required>
-          <label for="lugarEvento">Lugar</label>
-          <input type="text" name="lugarEvento" placeholder="Lugar" required>
-          <label for="tematicaEvento">Tematica Principal</label>
-          <input type="text" name="tematicaEvento" placeholder="Tematica Principal" required>
-          <label for="sitioEvento">Sitio web</label>
-          <input type="text" name="sitioEvento" placeholder="Sitio web" required>
-          <label for="costoEvento">Costo</label>
-          <input type="number" name="costoEvento" placeholder="Costo" required>
+        <form id="form-nuevo-evento">
+          <label for="nombre-evento">Nombre del Evento</label>
+          <input type="text" name="nombre-evento" placeholder="Nombre del Evento" required>
+          <label for="fecha-evento">Fecha</label>
+          <input type="date" name="fecha-evento" placeholder="Fecha" required>
+          <label for="lugar-evento">Lugar</label>
+          <input type="text" name="lugar-evento" placeholder="Lugar" required>
+          <label for="tematica-evento">Tematica Principal</label>
+          <input type="text" name="tematica-evento" placeholder="Tematica Principal" required>
+          <label for="sitio-evento">Sitio web</label>
+          <input type="text" name="sitio-evento" placeholder="Sitio web" required>
+          <label for="costo-evento">Costo</label>
+          <input type="number" name="costo-evento" placeholder="Costo" required>
           <div>
             <input type="submit" value="Guardar">
           </div>
         </form>
-        <button id="cancelarEvento">Cancelar</button>
+        <button id="cancelar-evento">Cancelar</button>
       </div>
     </div>
 </section>
