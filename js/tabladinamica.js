@@ -102,7 +102,7 @@ function crearCelda(data){
   return nuevaCelda
 }
 
-// Crea una nueva fila, pero sin los botones
+// Crea una nueva fila
 function crearFila(nombre, fecha, lugar, tematica, link, costo, btnEditar){
   let salida = []
   const nuevoEvento = document.createElement("tr");
@@ -142,7 +142,7 @@ async function cargarTablaDinamica(pagina, tablaDinamica, idsEventos) {
       return false
     }
     const response = await resposeApi.json();
-    //Carga la tabla dinamica
+    //Carga la tabla dinamica si hay nuevos elementos
     if (response.length > 0){
       tablaDinamica.innerHTML = "";
       for (let i = 0; i < response.length; i++) {
@@ -182,7 +182,7 @@ function borrarEvento(fila, id, idsEventos) {
     });
 }
 
-// Editar un evento
+// Edita un elemento o carga los input para que pueda ser editado
 function editarEvento(fila, id) {
   const cells = fila.getElementsByTagName("td");
   const tieneInput = cells[0].querySelector('input') !== null
