@@ -1,7 +1,7 @@
 "use strict"
 
 // Inicia las funcionalidad de la pagina de eventos
-async function iniciarPagina() {
+function iniciarPagina() {
   let paginaActual = 1;
   let idsEventos = []
   const tablaDinamica = document.getElementById("tabla-dinamica");
@@ -19,7 +19,12 @@ async function iniciarPagina() {
   // Boton pagina siguiente
   document.getElementById("siguiente-pagina").addEventListener("click", () => {
     paginaActual++;
-    cargarTablaDinamica(paginaActual, tablaDinamica, idsEventos);
+    cargarTablaDinamica(paginaActual, tablaDinamica, idsEventos)
+    .then( restar => {
+      if (! restar) {
+        paginaActual--;
+      }
+    })
   });
 
   const tablaAgregarEvento = document.getElementById("tabla-agregar-evento");
@@ -90,38 +95,72 @@ async function iniciarPagina() {
   }
 }
 
+// Crear una celda e inserta texto en ella
+function crearCelda(data){
+  const nuevaCelda = document.createElement("td");
+  nuevaCelda.innerHTML = data;
+  return nuevaCelda
+}
+
+// Crea una nueva fila, pero sin los botones
+function crearFila(nombre, fecha, lugar, tematica, link, costo, btnEditar){
+  let salida = []
+  const nuevoEvento = document.createElement("tr");
+  salida.push(nuevoEvento)
+  nuevoEvento.appendChild(crearCelda(nombre));
+  nuevoEvento.appendChild(crearCelda(fecha));
+  nuevoEvento.appendChild(crearCelda(lugar));
+  nuevoEvento.appendChild(crearCelda(tematica));
+  nuevoEvento.appendChild(crearCelda(`<a href="${link}" target="_blank">${link}</a>`));
+  nuevoEvento.appendChild(crearCelda(costo));
+  const celdaBtnBorrar = document.createElement("td");
+  const btnBorrar = document.createElement("button");
+  btnBorrar.innerHTML = "Borrar";
+  celdaBtnBorrar.appendChild(btnBorrar)
+  nuevoEvento.appendChild(celdaBtnBorrar);
+  salida.push(celdaBtnBorrar)
+  if (btnEditar) {
+    const celdaBtnEditar = document.createElement("td");
+    const btnEditar = document.createElement("button");
+    btnEditar.innerHTML = "Editar";
+    celdaBtnEditar.appendChild(btnEditar)
+    nuevoEvento.appendChild(celdaBtnEditar);
+    salida.push(celdaBtnEditar)
+  }
+  return salida
+}
+
 // Realiza la carga de la tabla dinamica
 async function cargarTablaDinamica(pagina, tablaDinamica, idsEventos) {
-  tablaDinamica.innerHTML = "";
-  const api_url = `https://6670b38d0900b5f8724b63bf.mockapi.io/api/v1/eventos?page=${pagina}&limit=5`;
-
-  const response = await (await fetch(api_url)).json();
-
-  //Carga la tabla dinamica
-  for (let i = 0; i < response.length; i++) {
-    let fila = tablaDinamica.insertRow(-1); // Agrega una fila al final de la tabla
-    let celdanombre = fila.insertCell(0);
-    let celdaFecha = fila.insertCell(1);
-    let celdaLugar = fila.insertCell(2);
-    let celdatematica = fila.insertCell(3);
-    let celdalink = fila.insertCell(4);
-    let celdaCosto = fila.insertCell(5);
-    let celdaBorrar = fila.insertCell(6);
-    let celdaEditar = fila.insertCell(7);
-
-    celdanombre.textContent = response[i].nombre;
-    const date = new Date(response[i].fecha * 1000);
-    const localDate = date.toLocaleDateString();
-    celdaFecha.textContent = localDate;
-    celdaLugar.textContent = response[i].lugar;
-    celdatematica.textContent = response[i].tematica;
-    celdalink.innerHTML = `<a href="${response[i].link}" target="_blank">${response[i].link}</a>`;
-    celdaCosto.textContent = response[i].costo;
-    idsEventos.push(response[i].id);
-    celdaBorrar.innerHTML = `<button>Borrar</button>`;
-    celdaBorrar.addEventListener("click", () => { borrarEvento(fila, response[i].id, idsEventos); });
-    celdaEditar.innerHTML = `<button>Editar</button>`;
-    celdaEditar.addEventListener("click", () => { editarEvento(fila, i, idsEventos, celdaEditar, tablaDinamica); });
+  const apiGetEventos = `https://6670b38d0900b5f8724b63bf.mockapi.io/api/v1/eventos?page=${pagina}&limit=5`;
+  try {
+    const resposeApi = await fetch(apiGetEventos)
+    if (resposeApi.status !== 200) {
+      const error = document.createElement('p')
+      error.innerHTML = "Ocurrio un error al cargar la tabla";
+      tablaDinamica.appendChild(error)
+      return false
+    }
+    const response = await resposeApi.json();
+    //Carga la tabla dinamica
+    if (response.length > 0){
+      tablaDinamica.innerHTML = "";
+      for (let i = 0; i < response.length; i++) {
+        const date = new Date(response[i].fecha * 1000).toLocaleDateString()
+        idsEventos.push(response[i].id);
+        const evento = crearFila(response[i].nombre, date,response[i].lugar, response[i].tematica, response[i].link, response[i].costo, true)
+        evento[1].addEventListener("click", () => { borrarEvento(evento[0], response[i].id, idsEventos) });
+        evento[2].addEventListener("click", () => { editarEvento(evento[0], response[i].id) });
+        tablaDinamica.appendChild(evento[0])
+      }
+      return true
+    }
+    return false
+  } catch {
+    const error = document.createElement('p')
+    error.innerHTML = "Ocurrio un error al cargar la tabla";
+    tablaDinamica.appendChild(error)
+    return false
   }
 }
 
@@ -144,22 +183,21 @@ function borrarEvento(fila, id, idsEventos) {
 }
 
 // Editar un evento
-function editarEvento(fila, i, idsEventos, celdaEditar, tabla) {
-  let cells = fila.getElementsByTagName("td");
-  let eventId = idsEventos[i];
-  if (celdaEditar.innerHTML === "<button>Editar</button>") {
-    let tableRows = tabla.getElementsByTagName("tr");
-    let cells = tableRows[i].getElementsByTagName("td");
+function editarEvento(fila, id) {
+  const cells = fila.getElementsByTagName("td");
+  const tieneInput = cells[0].querySelector('input') !== null
+  if (! tieneInput) { // Reemplaza el texto de las celdas a input y les coloca su valor
+    let cells = fila.getElementsByTagName("td");
     for (let j = 0; j < cells.length - 2; j++) {
       let input = document.createElement("input");
       input.type = "text";
       input.value = cells[j].textContent;
-      cells[j].textContent = "";
+      cells[j].innerHTML = ""
       cells[j].appendChild(input);
     }
-    celdaEditar.innerHTML = '<button>Guardar</button>';
-  } else {
-    let body = {
+    cells[cells.length-1].innerHTML = '<button>Guardar</button>';
+  } else { //Se presiono el boton guardar y se envian los datos a la API
+    const body = {
       nombre: cells[0].getElementsByTagName("input")[0].value,
       fecha: Math.floor(new Date(cells[1].getElementsByTagName("input")[0].value).getTime() / 1000),
       lugar: cells[2].getElementsByTagName("input")[0].value,
@@ -167,28 +205,28 @@ function editarEvento(fila, i, idsEventos, celdaEditar, tabla) {
       link: cells[4].getElementsByTagName("input")[0].value,
       costo: cells[5].getElementsByTagName("input")[0].value
     };
-    fetch(`https://6670b38d0900b5f8724b63bf.mockapi.io/api/v1/eventos/${eventId}`, {
+    fetch(`https://6670b38d0900b5f8724b63bf.mockapi.io/api/v1/eventos/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
     })
-      .then((response) => response.json())
-      .then((data) => {
-        cells[0].textContent = data.nombre;
-        const date = new Date(data.fecha * 1000);
-        const localDate = date.toLocaleDateString();
-        cells[1].textContent = localDate;
-        cells[2].textContent = data.lugar;
-        cells[3].textContent = data.tematica;
-        cells[4].innerHTML = `<a href="${data.link}" target="_blank">${data.link}</a>`;
-        cells[5].textContent = data.costo;
-        celdaEditar.innerHTML = '<button>Editar</button>';
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+    .then((response) => response.json())
+    .then((data) => {
+      cells[0].innerHTML = data.nombre;
+      const date = new Date(data.fecha * 1000);
+      const localDate = date.toLocaleDateString();
+      cells[1].innerHTML = localDate;
+      cells[2].innerHTML = data.lugar;
+      cells[3].innerHTML = data.tematica;
+      cells[4].innerHTML = `<a href="${data.link}" target="_blank">${data.link}</a>`;
+      cells[5].innerHTML = data.costo;
+      cells[6].innerHTML = '<button>Editar</button>';
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
   }
 }
 
@@ -215,42 +253,11 @@ function agregarCamposEventos(tabla) {
 
   // Carga el nuevo evento en la tabla de nuevos eventos, para que luego se cargue en la mockapi
   function submitForm(nombre, fecha, lugar, tematica, link, costo) {
-    const nuevoEvento = document.createElement("tr");
-    const nombreNuevoEvent = document.createElement("td");
-    nombreNuevoEvent.innerHTML = nombre;
-    nuevoEvento.appendChild(nombreNuevoEvent);
-
-    const fechaNuevoEvento = document.createElement("td");
-    fechaNuevoEvento.innerHTML = fecha;
-    nuevoEvento.appendChild(fechaNuevoEvento);
-
-    const lugarNuevoEvento = document.createElement("td");
-    lugarNuevoEvento.innerHTML = lugar;
-    nuevoEvento.appendChild(lugarNuevoEvento);
-
-    const tematicaNuevoEvento = document.createElement("td");
-    tematicaNuevoEvento.innerHTML = tematica;
-    nuevoEvento.appendChild(tematicaNuevoEvento);
-
-    const paginaNuevoEvento = document.createElement("td");
-    paginaNuevoEvento.innerHTML = `<a href="${link}" target="_blank">${link}</a>`;
-    nuevoEvento.appendChild(paginaNuevoEvento);
-
-    const costoNuevoEvento = document.createElement("td");
-    costoNuevoEvento.innerHTML = costo;
-    nuevoEvento.appendChild(costoNuevoEvento);
-
-    const borrarNuevoEvento = document.createElement("td");
-    const btnBorrar = document.createElement("button");
-    btnBorrar.innerHTML = "Borrar";
-    btnBorrar.addEventListener("click", () => {
-      nuevoEvento.parentNode.removeChild(tr);
+    const nuevoEvento = crearFila(nombre, fecha, lugar, tematica, link, costo, false);
+    nuevoEvento[1].addEventListener("click", () => {
+      tabla.removeChild(nuevoEvento);
     });
-    borrarNuevoEvento.appendChild(btnBorrar);
-    nuevoEvento.appendChild(borrarNuevoEvento);
-
     tabla.appendChild(nuevoEvento);
-
     document.getElementById("contenedor-formulario-evento").classList.add('hidden');
   }
 }

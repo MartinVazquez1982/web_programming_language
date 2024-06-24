@@ -38,7 +38,7 @@ input[type="text"]{
     color: #66fcf1;
   }
 
-  #formularioEvento{
+  #formulario-evento-nuevo{
     background-color: #1f2833;
     border: 1px solid #45a29e;
   }
@@ -103,7 +103,7 @@ input[type="text"]{
     color: #356562;
   }
 
-  #formularioEvento{
+  #formulario-evento-nuevo{
     background-color: #6fb3b8;
     border: 1px solid #357a77;
   }
@@ -203,12 +203,7 @@ nav .nav-link {
 
 /*Home*/
 
-.container-info-principal {
-  display: flex;
-  flex-direction: column;
-}
-
-.container-wrap{
+.container-info-principal, .container-wrap {
   display: flex;
   flex-direction: column;
 }
@@ -274,6 +269,7 @@ td {
 
 .container-manipulacion-tabla{
   display: flex;
+  flex-direction: column;
   width: 80%;
   justify-content: space-around;
   align-items: center;
@@ -353,8 +349,13 @@ input[type="date" i] {
 
 
 /*Eventos*/
-.evento{
-  width: 80%;
+
+#contenedor-formulario-evento{
+  width: 90%;
+}
+
+.evento-nuevo{
+  width: 100%;
   border-radius: 10px;
   margin: 10px 0;
   display: flex;
@@ -363,16 +364,12 @@ input[type="date" i] {
   text-decoration: none;
 }
 
-#formularioEvento{
+#formulario-evento-nuevo{
   width: 80%;
   border-radius: 10px;
   padding: 10px;
   display: flex;
   flex-direction: column;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 1);
 
   #form-nuevo-evento{
@@ -380,6 +377,7 @@ input[type="date" i] {
     flex-direction: column;
     align-items: center;
   }
+
   input{
     margin: 5px;
     max-width: 90%;
@@ -407,7 +405,7 @@ input[type="date" i] {
     width: 45%;
   }
 
-  #formularioEvento{
+  #formulario-evento-nuevo{
     width: 50%;
     max-width: 500px;
   }
@@ -440,5 +438,9 @@ input[type="date" i] {
     display: flex;
     justify-content: space-between;
     width: 40%;
+  }
+
+  .container-manipulacion-tabla{
+    flex-direction: row;
   }
 }

@@ -31,47 +31,46 @@
 </section>
 <section class="center-conteiner">
   <h3 class="subtitle-sections sc-conteiner-info">Agregar Evento</h3>
-  <div class="evento">
-    <table>
-      <thead>
-        <tr>
-          <th>Nombre del Evento</th>
-          <th>Fecha</th>
-          <th>Lugar</th>
-          <th>Tematica Principal</th>
-          <th>Sitio web</th>
-          <th>Costo</th>
-          <th>Borrar</th>
-        </tr>
-      </thead>
-      <tbody id="tabla-agregar-evento">
-      </tbody>
-    </table>
-    <div class="container-manipulacion-tabla">
-      <button id="agregar-evento">Agregar evento</button>
-      <button id="cargar-eventos">Cargar eventos</button>
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre del Evento</th>
+        <th>Fecha</th>
+        <th>Lugar</th>
+        <th>Tematica Principal</th>
+        <th>Sitio web</th>
+        <th>Costo</th>
+        <th>Borrar</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-agregar-evento">
+    </tbody>
+  </table>
+  <div class="container-manipulacion-tabla">
+    <button id="agregar-evento">Agregar evento</button>
+    <button id="cargar-eventos">Cargar eventos</button>
+  </div>
+  <div id="contenedor-formulario-evento" class="hidden">
+    <div id="formulario-evento-nuevo">
+      <h3 class="subtitle-sections sc-conteiner-info">Formulario</h3>
+      <form id="form-nuevo-evento">
+        <label for="nombre-evento">Nombre del Evento</label>
+        <input type="text" name="nombre-evento" placeholder="Nombre del Evento" required>
+        <label for="fecha-evento">Fecha</label>
+        <input type="date" name="fecha-evento" placeholder="Fecha" required>
+        <label for="lugar-evento">Lugar</label>
+        <input type="text" name="lugar-evento" placeholder="Lugar" required>
+        <label for="tematica-evento">Tematica Principal</label>
+        <input type="text" name="tematica-evento" placeholder="Tematica Principal" required>
+        <label for="sitio-evento">Sitio web</label>
+        <input type="text" name="sitio-evento" placeholder="Sitio web" required>
+        <label for="costo-evento">Costo</label>
+        <input type="number" name="costo-evento" placeholder="Costo" required>
+        <div>
+          <input type="submit" value="Guardar">
+        </div>
+      </form>
+      <button id="cancelar-evento">Cancelar</button>
     </div>
-    <div id="contenedor-formulario-evento" class="hidden">
-      <div id="formularioEvento">
-        <h3 class="subtitle-sections sc-conteiner-info">Formulario</h3>
-        <form id="form-nuevo-evento">
-          <label for="nombre-evento">Nombre del Evento</label>
-          <input type="text" name="nombre-evento" placeholder="Nombre del Evento" required>
-          <label for="fecha-evento">Fecha</label>
-          <input type="date" name="fecha-evento" placeholder="Fecha" required>
-          <label for="lugar-evento">Lugar</label>
-          <input type="text" name="lugar-evento" placeholder="Lugar" required>
-          <label for="tematica-evento">Tematica Principal</label>
-          <input type="text" name="tematica-evento" placeholder="Tematica Principal" required>
-          <label for="sitio-evento">Sitio web</label>
-          <input type="text" name="sitio-evento" placeholder="Sitio web" required>
-          <label for="costo-evento">Costo</label>
-          <input type="number" name="costo-evento" placeholder="Costo" required>
-          <div>
-            <input type="submit" value="Guardar">
-          </div>
-        </form>
-        <button id="cancelar-evento">Cancelar</button>
-      </div>
-    </div>
+  </div>
 </section>
