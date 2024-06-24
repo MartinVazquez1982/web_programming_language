@@ -26,7 +26,7 @@ async function iniciarPagina() {
   
   // Muestra el formulario para cargar un nuevo evento
   document.getElementById("agregar-evento").addEventListener("click", () => {
-    AgregarCamposEventos(tablaAgregarEvento);
+    agregarCamposEventos(tablaAgregarEvento);
   });
 
   // Envia eventos a la mockapi y los agrega a la tabla dinamica
@@ -91,15 +91,15 @@ async function iniciarPagina() {
 }
 
 // Realiza la carga de la tabla dinamica
-async function cargarTablaDinamica(pagina, tabla, idsEventos) {
-  tabla.innerHTML = "";
+async function cargarTablaDinamica(pagina, tablaDinamica, idsEventos) {
+  tablaDinamica.innerHTML = "";
   const api_url = `https://6670b38d0900b5f8724b63bf.mockapi.io/api/v1/eventos?page=${pagina}&limit=5`;
 
   const response = await (await fetch(api_url)).json();
 
   //Carga la tabla dinamica
   for (let i = 0; i < response.length; i++) {
-    let fila = tabla.insertRow(-1);
+    let fila = tablaDinamica.insertRow(-1); // Agrega una fila al final de la tabla
     let celdanombre = fila.insertCell(0);
     let celdaFecha = fila.insertCell(1);
     let celdaLugar = fila.insertCell(2);
@@ -121,7 +121,7 @@ async function cargarTablaDinamica(pagina, tabla, idsEventos) {
     celdaBorrar.innerHTML = `<button>Borrar</button>`;
     celdaBorrar.addEventListener("click", () => { borrarEvento(fila, response[i].id, idsEventos); });
     celdaEditar.innerHTML = `<button>Editar</button>`;
-    celdaEditar.addEventListener("click", () => { editarEvento(fila, i, idsEventos, celdaEditar, tabla); });
+    celdaEditar.addEventListener("click", () => { editarEvento(fila, i, idsEventos, celdaEditar, tablaDinamica); });
   }
 }
 
@@ -192,7 +192,8 @@ function editarEvento(fila, i, idsEventos, celdaEditar, tabla) {
   }
 }
 
-function AgregarCamposEventos(tabla) {
+// Agrega los eventos a la tabla de nuevos eventos para luego insertarlos a todos juntos
+function agregarCamposEventos(tabla) {
   let contenedor = document.getElementById("contenedor-formulario-evento");
   contenedor.classList.remove("hidden");
 

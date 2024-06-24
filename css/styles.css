@@ -21,11 +21,11 @@ input[type="text"]{
     color: #0b0c10;
   }
 
-  #nav {
+  nav {
     background-color: #1f2833;
   }
 
-  #nav .nav-link {
+  nav .nav-link {
     background-color: #1e4643;
   }
 
@@ -86,11 +86,11 @@ input[type="text"]{
     color: #507c7f;
   }
 
-  #nav {
+  nav {
     background-color: #6fb3b8;
   }
 
-  #nav .nav-link {
+  nav .nav-link {
     background-color: #badfe7;
   }
 
@@ -177,7 +177,7 @@ header h1 {
   width: 100%;
 }
 
-#nav {
+nav {
   display: none;
   margin: 5px;
   border-radius: 5px;
@@ -185,11 +185,11 @@ header h1 {
   align-items: center;
 }
 
-#nav.nav-visible {
+nav.nav-visible {
   display: flex;
 }
 
-#nav .nav-link {
+nav .nav-link {
   color: inherit;
   font-weight: bold;
   text-decoration: none;
@@ -417,7 +417,7 @@ input[type="date" i] {
     width: 30%;
   }
 
-  #nav {
+  nav {
     display: flex;
     justify-content: space-around;
     align-items: center;

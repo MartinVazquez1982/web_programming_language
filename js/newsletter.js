@@ -27,6 +27,7 @@ document.getElementById('newsletter').addEventListener('submit', function(event)
   selectCaptcha();
 });
 
+// Retorna la solucion de un captcha especifico
 function resultCaptcha(num) {
   const captchasSoluciones = [
     "nvhoxdm",

@@ -3,7 +3,7 @@
 document.addEventListener('DOMContentLoaded', function () {
   // Funcionalidad de la barra de navegación
   const btn_nav = document.querySelector("#btn-nav");
-  const nav = document.querySelector("#nav");
+  const nav = document.querySelector("nav");
 
   btn_nav.addEventListener("click", function (event) {
     nav.classList.toggle("nav-visible");
